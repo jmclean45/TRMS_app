@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>My Requests</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	crossorigin="anonymous">
+</head>
+<body onload="myReq()" style="background-color: #e5e4e2">
+		<div class=container-fluid
+		style="padding: 30px; color: #553119;border: 2px solid; background-color: #ffc107">
+		<h1 style="font-size:60px;font-style:bold" class=text-center>My Requests</h1>
+	</div>
+	 <div class="container-fluid">
+        <table class="table table-striped">
+			<tr>
+			<th>Date</th>
+				<th>Request Id</th>
+				<th>Status</th>
+				<th>Amount</th>
+				<th>My Grade</th>
+				<th>Feedback</th>
+			</tr>
+			<tbody  id="myReqs">
+			</tbody>
+			
+
+		</table>
+	</div>
+	 <div class="row">
+              <section class="col-sm-5">
+	 <form>
+      <fieldset class="form-group">
+        <legend>Update Event Grade:</legend>
+	<div class="form-group">
+          <label for="req_id">Enter Request ID</label>
+          <input class="form-control" type="text" id="req_id" placeholder="">
+        </div>
+ <div class="form-group">
+          <label for="grade">Enter final grade</label>
+          <input class="form-control" type="text" id="grade" placeholder="">
+          <a class="btn btn-warning"
+		type="submit"
+		role="button"
+		onclick= "grade();" >Submit &raquo</a>
+        </div>
+        </fieldset>
+        </form>
+        </section>
+        <section class="col-sm-2"></section>
+        <section class="col-sm-5">
+         <form>
+      <fieldset class="form-group">
+        <legend>Cancel Request:</legend>
+	<div class="form-group">
+          <label for="rid">Enter Request ID</label>
+          <input class="form-control" type="text" id="rid">
+        </div>
+ <div class="form-group">
+         
+          <a class="btn btn-warning"
+		type="submit"
+		role="button"
+		onclick= "cancel();" >Submit &raquo</a>
+        </div>
+        </fieldset>
+        </form>
+        </section>
+        </div>
+        
+
+</body>
+
+<script>
+	function myReq() {
+		console.log("Loading Reqs");
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				console.log("Successful Call");
+				console.log(this.responseText);
+				reqs = JSON.parse(this.responseText);
+				for (i = 0; i < reqs.length; i++) {
+					 var x=document.getElementById('myReqs').insertRow(0);
+					 var y=x.insertCell(0);
+					 var b=x.insertCell(1);
+					 var c=x.insertCell(2);
+					 var d=x.insertCell(3);
+					 var e=x.insertCell(4);
+					 var f=x.insertCell(5);
+					 y.innerHTML=reqs[i].req_date;
+					 b.innerHTML=reqs[i].req_id;
+					 c.innerHTML=reqs[i].req_status;
+					d.innerHTML=reqs[i].reimb_amt;
+					 e.innerHTML=reqs[i].emp_grade;
+					f.innerHTML=reqs[i].rej_just;
+
+
+		}
+					
+				}
+			}
+		url = "http://localhost:8080/TRMS-App/myReq.do"
+
+		console.log(url);
+		xhttp.open("GET", url, true);
+		//Step 4
+		xhttp.send();
+
+	}
+	function grade() {
+		  
+        let req_id = document.getElementById("req_id").value;
+        let emp_grade =document.getElementById("grade").value;
+      
+        let xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            if(this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+            }
+        }
+        xhttp.open("POST","http://localhost:8080/TRMS-App/grade.do",true);
+
+        xhttp.setRequestHeader('Content-Type','application/json');
+
+        let Request = {
+        	req_id:req_id,
+        	emp_grade:emp_grade
+        	
+        };
+        
+        xhttp.send(JSON.stringify(Request));
+    }
+	function cancel() {
+		console.log("Loading Events");
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				console.log("Successful Call");
+				console.log(this.responseText);
+				events = JSON.parse(this.responseText);
+
+			}
+		}
+		url = "http://localhost:8080/TRMS-App/cancel.do?req_id="+document.getElementById("rid").value
+
+		console.log(url);
+		xhttp.open("GET", url, true);
+		//Step 4
+		xhttp.send();
+	}
+
+	
+</script>
+</html>

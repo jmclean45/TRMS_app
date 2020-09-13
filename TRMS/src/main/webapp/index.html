@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Home</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+    <body style= background-color:#e5e4e2>
+      <div class=container-fluid
+		style="padding: 30px; color: #553119; border: 2px solid; background-color: #ffc107">
+		<h1 style="font-size:60px;font-style:bold" class=text-center>Empire Consulting Group</h1>
+		<h2  class=text-center><i>Tuition Reimbursement Request Portal</i></h2>
+	</div>
+        <div class="container text-center" style="padding:180px">
+         <h4 style="color:red" id="errortext"></h4>
+        	<h2>Sign In</h2>
+            <label for="username"></label>
+            <input class="form-control" type="text" id="username" placeholder="Username">
+            <label for="password"></label>
+            <input class="form-control" type="text" id="password" placeholder="*********">
+          <br>
+          <button onclick="signIn()" class="btn btn-warning mr-2 float-center" id="signIn" type="submit" style="width:200px">Sign in</button>
+          
+         
+          </div>
+        </body>
+
+<script>
+
+    
+    function signIn() {
+        console.log("Signing In");
+        let xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if(this.readyState == 4 && this.status == 200) {
+                console.log("Successful Call");
+                console.log(this.responseText);
+                //maybe i can respond with username and set a variable here and apply it to the next url
+                if(this.responseText=="Success"){
+                window.location.href = "http://localhost:8080/TRMS-App/Profile.html"
+                }else{
+                    document.getElementById("errortext").innerHTML="*Invalid Username or Password";
+                    document.getElementById("username").innerHTML="";
+                    document.getElementById("password").placeholder="*********";
+                    }   
+            }
+            }
+           url="http://localhost:8080/TRMS-App/signIn.do?username="+document.getElementById("username").value+"&password="+document.getElementById("password").value
+           
+        console.log(url);
+        xhttp.open("GET", url, true);
+        //Step 4
+        xhttp.send();
+    }
+   
+
+
+</script>
+</html>

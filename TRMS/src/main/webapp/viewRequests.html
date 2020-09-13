@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>View Requests</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	crossorigin="anonymous">
+</head>
+<body onload="viewReq()" style="background-color: #e5e4e2">
+
+	<div class=container-fluid
+		style="padding: 30px; color: #553119;border: 2px solid; background-color: #ffc107">
+		<h1 style="font-size:60px;font-style:bold" class=text-center>Request Management</h1>
+	</div>
+
+	<h3>Awaiting Approval:</h3>
+	 <div class="container-fluid">
+        <table class="table table-striped">
+			<tr>
+				<th>Request ID:</th>
+				<th>Sent By:</th>
+				<th>Status</th>
+				<th>Description</th>
+				<th>Justification</th>
+				<th>Hours Missed</th>
+				<th>Urgent</th>
+			</tr>
+			<tbody id="myReqs">
+			<tr></tr>
+			</tbody>
+			
+
+		</table>
+		
+		<div class="container text-center">
+		     <a class="btn btn-block btn-warning"
+		     href="http://localhost:8080/TRMS-App/NewMsg.html"
+		role="button"
+		 >Request Additional Information &raquo  </a>
+		</div>
+	</div>
+	 <table class="table table-striped">
+			<tr>
+			</tr>
+			<tbody id="urg">
+			<tr></tr>
+			</tbody>
+			
+
+		</table>
+	 <form>
+      <fieldset class="form-group">
+        <legend>Accept Request</legend>
+ 		<div class="form-group">
+      
+          <input class="form-control" type="number" id="req_id" placeholder="Enter Request Id">
+         
+          <a class="btn btn-warning" type="submit"
+		role="button"
+		onclick= "approve();" >Approve Request &raquo</a>
+		<br>
+      
+   
+		  </div>
+    
+     
+        <br>
+        <hr>
+        </fieldset>
+        <fieldset class="form-group">
+        <legend>Reject Request</legend>
+         <div class="form-group">
+          <input class="form-control" type="number" id="rej_id" placeholder="Enter Request Id">
+      <label  for="rej_just">Justification:</label>
+      <textarea class="form-control" id="rej_just" placeholder="Explanation for Rejection" rows="3"></textarea>
+    
+    <a class="btn btn-warning"
+		type="submit"
+		role="button"
+		onclick= "reject();" >Send Rejection Notice &raquo</a>
+		</div><!-- form-group -->
+		</fieldset>
+		</form>
+
+</body>
+
+<script>
+	function viewReq() {
+		console.log("Loading Reqs");
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				console.log("Successful Call");
+				console.log(this.responseText);
+				reqs = JSON.parse(this.responseText);
+				for (i = 0; i < reqs.length; i++) {
+					
+				 var x=document.getElementById('myReqs').insertRow(0);
+				 var y=x.insertCell(0);
+				 var b=x.insertCell(1);
+				 var c=x.insertCell(2);
+				 var d=x.insertCell(3);
+				 var e=x.insertCell(4);
+				 var f=x.insertCell(5);
+				 var g=x.insertCell(6);
+				 y.innerHTML=reqs[i].req_id;
+				 b.innerHTML=reqs[i].fname+" "+reqs[i].lname;
+				 c.innerHTML=reqs[i].req_status;
+				d.innerHTML=reqs[i].ev_desc;
+				 e.innerHTML=reqs[i].emp_just;
+				f.innerHTML=reqs[i].hours_missed;
+				g.innerHTML=reqs[i].s_a;
+				}
+					
+				}
+			}
+		url = "http://localhost:8080/TRMS-App/viewReq.do"
+
+		console.log(url);
+		xhttp.open("GET", url, true);
+		//Step 4
+		xhttp.send();
+
+	}
+	  function approve() {
+		  
+	        let req_id = document.getElementById("req_id").value;
+	        //Make AJAX call:
+	        let xhttp = new XMLHttpRequest();
+
+	        xhttp.onreadystatechange = function() {
+	            if(this.readyState == 4 && this.status == 200) {
+	                console.log(this.responseText);
+	            }
+	        }
+	        xhttp.open("POST","http://localhost:8080/TRMS-App/approve.do",true);
+
+	        xhttp.setRequestHeader('Content-Type','application/json');
+
+	        let Request = {
+	        	req_id:req_id,
+	        	
+	        };
+	        
+	        xhttp.send(JSON.stringify(Request));
+	    }
+	  function reject() {
+		  
+	        let req_id = document.getElementById("rej_id").value;
+	        let rej_just =document.getElementById("rej_just").value;
+	        let bc_a = 0;
+	      
+	        let xhttp = new XMLHttpRequest();
+
+	        xhttp.onreadystatechange = function() {
+	            if(this.readyState == 4 && this.status == 200) {
+	                console.log(this.responseText);
+	            }
+	        }
+	        xhttp.open("POST","http://localhost:8080/TRMS-App/reject.do",true);
+
+	        xhttp.setRequestHeader('Content-Type','application/json');
+
+	        let Request = {
+	        	req_id:req_id,
+	        	rej_just:rej_just,
+	        	bc_a:bc_a
+	        	
+	        	
+	        };
+	        
+	        xhttp.send(JSON.stringify(Request));
+	    }
+	  function urgent() {
+			console.log("Loading Reqs");
+			let xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					console.log("Successful Call");
+					console.log(this.responseText);
+					urgs = JSON.parse(this.responseText);
+					for (i = 0; i < urgs.length; i++) {
+						
+					 var x=document.getElementById('urg').insertRow(0);
+					 var y=x.insertCell(0);
+				
+					 y.innerHTML=urgs[i].req_id;
+					
+
+
+			}
+						
+					}
+				}
+			url = "http://localhost:8080/TRMS-App/urgent.do"
+
+			console.log(url);
+			xhttp.open("GET", url, true);
+			//Step 4
+			xhttp.send();
+
+		}
+	
+</script>
+</html>

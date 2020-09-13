@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>My Profile</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</head>
+<body onload="getEmpInfo();checkMail();urgent();" style="background-color: #e5e4e2"> 
+	<div class=container-fluid 
+		style="padding: 30px; color: #553119;border: 2px solid; background-color: #ffc107">
+		<h1 style="font-size:60px;font-style:bold" class=text-center>My Profile</h1>
+	</div>
+	<p>
+		<a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+		  Link with href
+		</a>
+		<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+		  Button with data-target
+		</button>
+	  </p>
+	  <div class="collapse" id="collapseExample">
+		<div class="card card-body">
+		  Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+		</div>
+	  </div>
+	  
+	
+	<div class="container-fluid mt-4">
+	 <div class="row">
+              <section class="col-sm-6 mt-4" style="text-align:center">
+			<h1 id="name"></h1><hr>
+			<h3 id="title"></h3><br>
+			Employee ID:<h4 id="emp_id"class="ml-2"></h4>
+			Supervisor ID:<h4 id="superid"class="ml-2"></h4>
+			Department:<h4 id="dept"class="ml-2"></h4>
+			<br>
+			<a class="btn btn-warning mt-4"
+					href="http://localhost:8080/TRMS-App/index.html"
+					role="button"
+					style="padding:16px 80px; border-radius:10px; border: 2px solid;font-size:25px;">Home</a><br><br><br><br>
+			<button onclick="reset();" id="reset" style="visibility:hidden">New Year Reset</button>
+			<h3 id="mess" style="visibility:hidden">All Employee Reimbursement Balances Have Been Reset<br>Happy New Year</h3>
+			</section>
+			
+			<section class="col-sm-6" style="border-left: 1px solid lightgray; text-align:center ">
+			<div class="btn-group btn-group-vertical mb-2 ml-4">
+				<a class="btn btn-warning mt-4"
+					href="http://localhost:8080/TRMS-App/Notifications.html"
+					role="button"
+					style="padding:28px; border-radius:10px; border: 2px solid;font-size:25px;"><span id="alert"class="badge badge-danger badge-pill"></span> Notifications &raquo</a>
+  				<a class="btn btn-warning mt-4"
+					href="http://localhost:8080/TRMS-App/events.html"
+					role="button"
+					style="padding:28px 80px; border-radius:10px; border: 2px solid;font-size:25px;">View Events &raquo</a>
+					<a class="btn btn-warning mt-4"
+					href="http://localhost:8080/TRMS-App/Request.html"
+					role="button"
+					style="padding:16px 80px; border-radius:10px; border: 2px solid;font-size:25px;">Submit Request &raquo</a>
+				<button onclick="nextPage();" class="btn btn-warning mt-4 "
+					role="button"
+					style="padding:28px; border-radius:10px; border: 2px solid;font-size:25px ">Incoming Requests &raquo</button>
+ 				<a class="btn btn-warning mt-4"
+					href="http://localhost:8080/TRMS-App/MyRequests.html"
+					role="button"
+					style="padding:28px; border-radius:10px; border: 2px solid;font-size:25px ">My Requests &raquo</a>
+				
+</div>
+
+			
+			</section>
+			</div>
+			</div>
+	
+		
+</body>
+
+<script>
+
+		function getEmpInfo(){
+			
+			let xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					console.log(this.responseText);
+					emp = JSON.parse(this.responseText);
+					
+					document.getElementById('name').innerHTML=emp.fname+" "+emp.lname;
+					document.getElementById('title').innerHTML=emp.job_t;
+					document.getElementById('emp_id').innerHTML=emp.emp_id;
+					document.getElementById('superid').innerHTML=emp.super_id;
+					document.getElementById('dept').innerHTML=emp.dept_name;
+					if(emp.emp_id==9){document.getElementById('reset').style="border-radius:10px"};
+
+				}
+			}
+			url = "http://localhost:8080/TRMS-App/getEmpInfo.do"
+
+			console.log(url);
+			xhttp.open("GET", url, true);
+			//Step 4
+			xhttp.send();
+		
+		}
+		function nextPage(){
+			console.log("test"+emp.emp_id)
+			if(emp.emp_id>15){ window.location.href = "http://localhost:8080/TRMS-App/viewRequests.html"
+			}else if(emp.emp_id<14){ window.location.href = "http://localhost:8080/TRMS-App/viewRequests.html"
+			}else{
+					 window.location.href = "http://localhost:8080/TRMS-App/Benco.html"
+			}
+		
+	}
+		function reset(){
+		        let xhttp = new XMLHttpRequest();
+		        xhttp.onreadystatechange = function() {
+		            if(this.readyState == 4 && this.status == 200) {
+		                console.log("Successful Call");
+		        
+		                    document.getElementById("mess").style="color:blue"
+		            }
+		            }
+		           url="http://localhost:8080/TRMS-App/reset.do"
+		           
+		        console.log(url);
+		        xhttp.open("GET", url, true);
+		        //Step 4
+		        xhttp.send();
+		    }
+		
+		function urgent(){
+	        let xhttp = new XMLHttpRequest();
+	        xhttp.onreadystatechange = function() {
+	            if(this.readyState == 4 && this.status == 200) {
+	           console.log('urg')
+	            }
+	            }
+	           url="http://localhost:8080/TRMS-App/urgent.do"
+	           
+	        console.log(url);
+	        xhttp.open("GET", url, true);
+	        //Step 4
+	        xhttp.send();
+	    }
+		
+		function checkMail() {
+			let xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+				if (this.readyState == 4 && this.status == 200) {
+					console.log(this.responseText);
+					if(this.responseText=="false"){
+						console.log("yes");
+					}else{
+						document.getElementById("alert").innerHTML="New"}
+					
+						
+					}
+				}
+			url = "http://localhost:8080/TRMS-App/viewMail.do"
+
+			console.log(url);
+			xhttp.open("GET", url, true);
+			//Step 4
+			xhttp.send();
+
+		}
+	
+	/*<function viewE() {
+		console.log("Loading Events");
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				console.log("Successful Call");
+				console.log(this.responseText);
+				events = JSON.parse(this.responseText);
+
+			}
+		}
+		url = "http://localhost:8080/TRMS-App/viewE.do"
+
+		console.log(url);
+		xhttp.open("GET", url, true);
+		//Step 4
+		xhttp.send();
+	}
+	*/
+</script>
+</html>
