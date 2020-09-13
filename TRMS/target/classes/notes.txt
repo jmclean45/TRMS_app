@@ -1,0 +1,5 @@
+cookie: unique session ID
+	stored in client machine
+		subsequent requests can be recognized using cookie
+		
+		http://localhost:8080/ReimbursementApp/signIn.do?username=AP&password=ap12

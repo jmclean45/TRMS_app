@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Reimbursement Management</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+	integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+	crossorigin="anonymous">
+</head>
+<body onload="getBen()" style="background-color: #e5e4e2">
+	<div class=container-fluid
+		style="padding: 30px; color: #553119;border: 2px solid; background-color: #ffc107">
+		<h1 style="font-size:60px;font-style:bold" class=text-center>Reimbursement Management</h1>
+	</div>
+
+	<h3>Requests</h3>
+	 <div class="container-fluid">
+        <table class="table table-striped">
+			<tr>
+				<th>Request ID</th>
+				<th>Sent By</th>
+				<th>Employee ID
+				<th>Status</th>
+				<th>Grading Format</th>
+				<th>Passing Grade</th>
+				<th>Employee Grade</th>
+			</tr>
+			<tbody id="myReqs">
+			<tr></tr>
+			</tbody>
+			
+
+		</table><br>
+				<div class="container text-center">
+		     <a class="btn btn-block btn-warning"
+		     href="http://localhost:8080/TRMS-App/NewMsg.html"
+		role="button"
+		 >Request Additional Information &raquo  </a></div>
+	</div>
+	</div>
+	<hr>
+	 <div class="row">
+              <section class="col-sm-4">
+              <h2>Request Approval</h2>
+	<div class="form-group">
+		<label for="rid">Calculate Standard Reimbursement Coverage</label> <input class="form-control"
+			type="number" id="rid" placeholder="Enter Request Id"> <a
+			class="btn btn-block btn-warning" type="submit" role="button"
+			onclick="calculate()">Calculate &raquo</a>
+			<div class="text-left">
+			<h5 id="cost"></h5>
+			<h5 id="cover"></h5>
+			<p id="p"></p>
+			<h5 id="calc"></h5>
+			</div>
+			
+	</div>
+	
+	<div class="form-group">
+		<label for="avail">Available Reimbursement</label> <input class="form-control"
+			type="number" id="avail" placeholder="Enter Employee Id"> <a
+			class="btn btn-block btn-warning" type="submit" role="button"
+			onclick="available()">Look up Employee Balance &raquo</a>
+			<h3 id="bal"></h3>
+	</div>
+	<div class="form-group">
+		<label for="ramt">Enter Reimbursement Amount To Award</label> <input
+			class="form-control" type="number" id="ramt"
+			placeholder="$"> 
+			<div class="btn-group btn-group mb-2 mr-2"style=padding:10%>
+  <button type="button" class="btn btn-warning" onclick="approve();">Approve Amount</button>
+	  <a class="btn btn-block btn-warning"
+			type="submit" role="button" onclick="approve();"   href="http://localhost:8080/TRMS-App/NewMsg.html" onclick="approve();">Send Notice of Adjustment</a>
+			
+		
+			</div>
+	</div>
+
+	
+</section>
+<section class="col-sm-2"></section>
+
+
+<section class="text-center col-sm-6 align-middle" style="border-left: 1px solid lightgray">
+<div class="container">
+<h2>Assess Final Grades</h2>
+<label for="rid2">Award Reimbursement</label> <input class="form-control"
+			type="number" id="rid2" placeholder="Enter Request Id"><a
+			class="btn btn-warning btn-block" type="submit" role="button"
+			onclick="award()">Accept &raquo</a><br>
+			
+         <div class="form-group">
+         <label for="rej_id"></label>
+        <fieldset class="form-group">
+        <h2>Reject Request</h2>
+         <div class="form-group">
+          <input class="form-control" type="number" id="rej_id" placeholder="Enter Request Id">
+      <label  for="rej_just">Justification:</label>
+      <textarea class="form-control" id="rej_just" placeholder="Explanation for Rejection" rows="3"></textarea>
+    
+    <a class="btn btn-warning"
+		type="submit"
+		role="button"
+		onclick= "reject();" >Send Rejection Notice &raquo</a>
+		</div><!-- form-group -->
+		</fieldset>
+		
+		
+
+
+</div>
+</section>
+</div>
+
+</body>
+
+<script>
+	function getBen() {
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				reqs = JSON.parse(this.responseText);
+				
+				for (i = 0; i < reqs.length; i++) {
+					 var x=document.getElementById('myReqs').insertRow(0);
+					 var y=x.insertCell(0);
+					 var b=x.insertCell(1);
+					 var c=x.insertCell(2);
+					 var d=x.insertCell(3);
+					 var e=x.insertCell(4);
+					 var f=x.insertCell(5);
+					 var g=x.insertCell(6);
+					 y.innerHTML=reqs[i].req_id;
+					 b.innerHTML=reqs[i].fname+" "+reqs[i].lname;
+					 c.innerHTML=reqs[i].emp_id;
+					 d.innerHTML=reqs[i].req_status;
+					 e.innerHTML=reqs[i].grading_format;
+					 f.innerHTML=reqs[i].passing_grade;
+					 g.innerHTML=reqs[i].emp_grade;
+				}
+
+			}
+		}
+		url = "http://localhost:8080/TRMS-App/getBen.do"
+
+		xhttp.open("GET", url, true);
+		//Step 4
+		xhttp.send();
+
+	}
+	function approve() {
+
+		let req_id = document.getElementById("rid").value;
+		let reimb_amt= document.getElementById("ramt").value;
+		//Make AJAX call:
+		let xhttp = new XMLHttpRequest();
+
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				console.log(this.responseText);
+			}
+		}
+		xhttp.open("POST", "http://localhost:8080/TRMS-App/finalApprove.do", true);
+
+		xhttp.setRequestHeader('Content-Type', 'application/json');
+
+		let Request = {
+			req_id : req_id,
+			reimb_amt : reimb_amt,
+
+		};
+
+		xhttp.send(JSON.stringify(Request));
+	}
+	function award() {
+
+		let req_id = document.getElementById("rid2").value;
+		//Make AJAX call:
+		let xhttp = new XMLHttpRequest();
+
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				console.log(this.responseText);
+			}
+		}
+		xhttp.open("POST", "http://localhost:8080/TRMS-App/award.do", true);
+
+		xhttp.setRequestHeader('Content-Type', 'application/json');
+
+		let Request = {
+			req_id : req_id,
+
+		};
+
+		xhttp.send(JSON.stringify(Request));
+	}
+	
+	
+	function calculate(){
+		
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				console.log(this.responseText);
+				ca = JSON.parse(this.responseText);
+				
+				document.getElementById('cost').innerHTML="Total Event Cost: $"+ca.ev_cost;
+				document.getElementById('cover').innerHTML="Coverage: "+ca.coverage+"%";
+				document.getElementById('p').innerHTML="Suggested Reimbusement Amount:";
+	            document.getElementById('calc').innerHTML=ca.ev_cost*(ca.coverage/100);
+			}
+		}
+		url = "http://localhost:8080/TRMS-App/calculate.do?req_id="+document.getElementById("rid").value
+
+		console.log(url);
+		xhttp.open("GET", url, true);
+		//Step 4
+		xhttp.send();
+	
+	}
+function available(){
+		
+		let xhttp = new XMLHttpRequest();
+		xhttp.onreadystatechange = function() {
+			if (this.readyState == 4 && this.status == 200) {
+				av = this.responseText;
+				console.log(1000-av);
+				console.log(parseInt(document.getElementById('calc').innerHTML));
+				
+				document.getElementById('bal').innerHTML=1000-av;
+				if ((1000-av)<parseInt(document.getElementById('calc').innerHTML)){
+					document.getElementById('ramt').placeholder="*Insufficient Balance* Suggested: $"+(1000-av);
+				}else{
+					document.getElementById('ramt').placeholder= document.getElementById('calc').innerHTML;
+					
+				}
+				
+			}
+		}
+		url = "http://localhost:8080/TRMS-App/available.do?emp_id="+document.getElementById("avail").value
+
+		console.log(url);
+		xhttp.open("GET", url, true);
+		//Step 4
+		xhttp.send();
+	
+	}
+function reject() {
+	  
+    let req_id = document.getElementById("rej_id").value;
+    let rej_just =document.getElementById("rej_just").value;
+    let bc_a = 0;
+  
+    let xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function() {
+        if(this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+        }
+    }
+    xhttp.open("POST","http://localhost:8080/TRMS-App/reject.do",true);
+
+    xhttp.setRequestHeader('Content-Type','application/json');
+
+    let Request = {
+    	req_id:req_id,
+    	rej_just:rej_just,
+    	bc_a:bc_a
+    	
+    	
+    };
+    
+    xhttp.send(JSON.stringify(Request));
+}
+
+	
+</script>
+</html>

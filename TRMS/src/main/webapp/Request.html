@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="ISO-8859-1">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+    
+<body>
+
+    <div class="container">
+    
+    <h2>Tuition Reimbursement Approval</h2>
+    
+    <form>
+      <fieldset class="form-group">
+    
+        <legend>Employee Information</legend>
+    
+        <div class="form-group row">
+          <div class="col">
+          <label class="col-form-label" for="emp_id">Employee Id:</label>
+          <input class="form-control" type="number" id="emp_id">
+        </div>
+        <div class="form-group col">
+          <label class="col-form-label" for="fname">First Name:</label>
+          <input class="form-control" type="text" id="fname">
+        </div>
+        <div class="form-group col">
+          <label class="col-form-label" for="lname">Last Name:</label>
+          <input class="form-control" type="text" id="lname">
+        </div>
+      </div><!-- form-group -->
+    </fieldset>
+
+    <fieldset class="form-group">
+      <legend>Event Info</legend>
+  
+      <div class="form-group row">
+        <div class="col">
+        <label class="col-form-label" for="ev_id">Event Id:</label>
+        <input class="form-control" type="number" id="ev_id">
+      </div>
+      <div class="form-group col">
+        <label class="col-form-label" for="ev_type">Event Type</label>
+        <select class="form-control" id="ev_type">
+          <option>Choose:</option>
+          <option value="University Course">University Course</option>
+          <option value="Seminar">Seminar</option>
+          <option value="Certification Prep">Certification Prep</option>
+          <option value="Certification">Certification</option>
+          <option value="Technical Training">Technical Training</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div><!-- form-group -->
+
+    
+    <div class="form-group">
+      <label for="ev_desc">Event Description:</label>
+      <input class="form-control" type="text" id="ev_desc" placeholder="Details about this training event">
+    </div><!-- form-group -->
+
+    <div class="form-group">
+      <label  for="emp_just">Justification:</label>
+      <textarea class="form-control" id="emp_just" placeholder="Provide reasons for attending this event" rows="3"></textarea>
+    </div><!-- form-group -->
+
+    <div class="form-group">
+      <label for="location">Location:</label>
+      <input class="form-control" type="text" id="location" >
+    </div><!-- form-group -->
+
+    <div class="form-group">
+      <label for="hours">Work Hours Missed:</label>
+      <input class="form-control" type="number" id="hours" placeholder="Hours per day or Total hours depending on event">
+    </div><!-- form-group -->
+  </fieldset>
+
+    <fieldset class="form-group">
+    <legend>Upload Supporting Documents</legend>
+      <div class="form-group">
+        <div class="custom-file">
+        <input type="file" class="custom-file-input" id="docs">
+        <label class="custom-file-label" for="docs"> Upload</label>
+      </div>
+
+  
+      <button onclick= "makeReq();" class="btn btn-primary">Submit</button>
+         <a href="http://localhost:8080/TRMS-App/Profile.html" class="btn btn-primary">Return</a>
+   
+    </div><!-- form-group -->
+    </fieldset>
+    </form>
+    
+      </div>
+</div>
+
+</body>
+
+<script>
+    function makeReq() {
+       //type= "Seminar";
+        let emp_id = document.getElementById("emp_id").value;
+        let fname = document.getElementById("fname").value;
+        let lname = document.getElementById("lname").value;
+        let ev_id= document.getElementById("ev_id").value;
+        let ev_type= document.getElementById("ev_type").value;;
+        let ev_desc = document.getElementById("ev_desc").value;
+        let emp_just = document.getElementById("emp_just").value;
+        let location = document.getElementById("location").value;
+        let hours_missed = document.getElementById("hours").value;
+
+
+        //Make AJAX call:
+        let xhttp = new XMLHttpRequest();
+
+        xhttp.onreadystatechange = function() {
+            if(this.readyState == 4 && this.status == 200) {
+                console.log(this.responseText);
+            }
+        }
+
+        xhttp.open("POST","http://localhost:8080/TRMS-App/makeReq.do",true);
+
+        xhttp.setRequestHeader('Content-Type','application/json');
+        
+        let Request = {
+        	emp_id: emp_id,
+        	ev_id: ev_id,
+        	fname: fname,
+        	lname: lname,
+        	ev_type: ev_type,
+        	ev_desc: ev_desc,
+            emp_just: emp_just,
+            location: location,
+            hours_missed: hours_missed,
+        };
+        
+        xhttp.send(JSON.stringify(Request));
+    }
+</script>
+
+</html>
